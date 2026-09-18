@@ -31,7 +31,7 @@ function Auth() {
     });
   }, [navigate]);
 
-  async function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent): Promise<void> {
     e.preventDefault();
     setBusy(true);
     if (mode === "reset") {
@@ -39,14 +39,14 @@ function Auth() {
         redirectTo: `${window.location.origin}/profile`,
       });
       setBusy(false);
-      if (error) return toast.error(error.message);
+      if (error) { toast.error(error.message); return; }
       toast.success("If that address is a member, a reset link is on its way.");
       setMode("signin");
       return;
     }
     const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     navigate({ to: "/directory" });
   }
 

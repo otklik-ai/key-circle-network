@@ -3,6 +3,8 @@ import { createOpenAI } from "@ai-sdk/openai";
 import { streamText, Output } from "ai";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/integrations/supabase/types";
 
 const SearchInput = z.object({ query: z.string().min(3).max(500) });
 
@@ -80,7 +82,7 @@ export const searchMembers = createServerFn({ method: "POST" })
   });
 
 async function logRequest(
-  context: { supabase: { from: (t: "search_requests") => any }; userId: string },
+  context: { supabase: SupabaseClient<Database>; userId: string },
   query: string,
   count: number,
 ) {
