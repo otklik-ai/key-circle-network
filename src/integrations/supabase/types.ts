@@ -14,16 +14,314 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      conversation_participants: {
+        Row: {
+          conversation_id: string
+          user_id: string
+        }
+        Insert: {
+          conversation_id: string
+          user_id: string
+        }
+        Update: {
+          conversation_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversation_participants_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      conversations: {
+        Row: {
+          created_at: string
+          id: string
+          last_message_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_message_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_message_at?: string
+        }
+        Relationships: []
+      }
+      friendships: {
+        Row: {
+          addressee_id: string
+          created_at: string
+          id: string
+          requester_id: string
+          status: string
+        }
+        Insert: {
+          addressee_id: string
+          created_at?: string
+          id?: string
+          requester_id: string
+          status?: string
+        }
+        Update: {
+          addressee_id?: string
+          created_at?: string
+          id?: string
+          requester_id?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      invites: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          email: string | null
+          expires_at: string | null
+          grants_admin: boolean
+          id: string
+          industry_hint: string | null
+          invited_name: string | null
+          key: string
+          location_hint: string | null
+          note: string | null
+          status: string
+          used_at: string | null
+          used_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          expires_at?: string | null
+          grants_admin?: boolean
+          id?: string
+          industry_hint?: string | null
+          invited_name?: string | null
+          key: string
+          location_hint?: string | null
+          note?: string | null
+          status?: string
+          used_at?: string | null
+          used_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          expires_at?: string | null
+          grants_admin?: boolean
+          id?: string
+          industry_hint?: string | null
+          invited_name?: string | null
+          key?: string
+          location_hint?: string | null
+          note?: string | null
+          status?: string
+          used_at?: string | null
+          used_by?: string | null
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          body: string
+          conversation_id: string
+          created_at: string
+          id: string
+          sender_id: string
+        }
+        Insert: {
+          body: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          sender_id: string
+        }
+        Update: {
+          body?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          bio: string | null
+          call_link: string | null
+          city: string | null
+          country: string | null
+          created_at: string
+          current_projects: string | null
+          email: string | null
+          expertise: string[]
+          full_name: string
+          headline: string | null
+          id: string
+          industries: string[]
+          languages: string[]
+          linkedin_url: string | null
+          membership_status: string
+          offering: string | null
+          onboarding_complete: boolean
+          passports: string[]
+          photo_url: string | null
+          seeking: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bio?: string | null
+          call_link?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          current_projects?: string | null
+          email?: string | null
+          expertise?: string[]
+          full_name?: string
+          headline?: string | null
+          id?: string
+          industries?: string[]
+          languages?: string[]
+          linkedin_url?: string | null
+          membership_status?: string
+          offering?: string | null
+          onboarding_complete?: boolean
+          passports?: string[]
+          photo_url?: string | null
+          seeking?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bio?: string | null
+          call_link?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          current_projects?: string | null
+          email?: string | null
+          expertise?: string[]
+          full_name?: string
+          headline?: string | null
+          id?: string
+          industries?: string[]
+          languages?: string[]
+          linkedin_url?: string | null
+          membership_status?: string
+          offering?: string | null
+          onboarding_complete?: boolean
+          passports?: string[]
+          photo_url?: string | null
+          seeking?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      search_requests: {
+        Row: {
+          admin_notes: string | null
+          created_at: string
+          id: string
+          query: string
+          result_count: number
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string
+          id?: string
+          query: string
+          result_count?: number
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string
+          id?: string
+          query?: string
+          result_count?: number
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_club_stats: { Args: never; Returns: Json }
+      get_or_create_conversation: {
+        Args: { _other_user: string }
+        Returns: string
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_participant: {
+        Args: { _conversation_id: string; _user_id: string }
+        Returns: boolean
+      }
+      redeem_invite: { Args: { _key: string }; Returns: string }
+      validate_invite: {
+        Args: { _key: string }
+        Returns: {
+          email: string
+          invited_name: string
+          note: string
+          valid: boolean
+        }[]
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "member"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +448,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "member"],
+    },
   },
 } as const
