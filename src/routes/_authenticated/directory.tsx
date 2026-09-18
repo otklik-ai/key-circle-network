@@ -135,7 +135,7 @@ function Directory() {
   );
 }
 
-function MemberCard({ m, url }: { m: Profile; url?: string }) {
+function MemberCard({ m, url }: { m: Profile; url?: string | undefined }) {
   return (
     <Link to="/members/$userId" params={{ userId: m.user_id }} className="stone-card flex gap-4 p-4 transition-transform hover:-translate-y-0.5">
       <Avatar name={m.full_name} url={url} size="lg" />

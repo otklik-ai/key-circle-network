@@ -67,7 +67,7 @@ export function AppShell({ children, wide }: { children: ReactNode; wide?: boole
   );
 }
 
-export function Avatar({ name, url, size = "md" }: { name: string; url?: string | null; size?: "sm" | "md" | "lg" | "xl" }) {
+export function Avatar({ name, url, size = "md" }: { name: string; url?: string | null | undefined; size?: "sm" | "md" | "lg" | "xl" }) {
   const cls = { sm: "size-9 text-sm", md: "size-12 text-base", lg: "size-20 text-2xl", xl: "size-32 text-4xl" }[size];
   const ini = name
     .split(" ")

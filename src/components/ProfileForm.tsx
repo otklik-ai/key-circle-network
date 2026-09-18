@@ -66,18 +66,18 @@ export function ProfileForm() {
       .map((x) => x.trim())
       .filter(Boolean);
 
-  async function uploadPhoto(file: File) {
+  async function uploadPhoto(file: File): Promise<void> {
     const { data: auth } = await supabase.auth.getUser();
     if (!auth.user) return;
-    if (file.size > 5 * 1024 * 1024) return toast.error("Please choose a photo under 5 MB.");
+    if (file.size > 5 * 1024 * 1024) { toast.error("Please choose a photo under 5 MB."); return; }
     const path = `${auth.user.id}/portrait-${Date.now()}.${file.name.split(".").pop() ?? "jpg"}`;
     const { error } = await supabase.storage.from("avatars").upload(path, file, { upsert: true });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     setF((s) => ({ ...s, photo_url: path }));
     setPhotoPreview(URL.createObjectURL(file));
   }
 
-  async function save(complete: boolean) {
+  async function save(complete: boolean): Promise<void> {
     if (!profile) return;
     setBusy(true);
     const { error } = await supabase
@@ -102,7 +102,7 @@ export function ProfileForm() {
       })
       .eq("id", profile.id);
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     if (complete) {
       await qc.invalidateQueries();
       toast.success(profile.onboarding_complete ? "Profile updated." : `Welcome to ${CLUB_NAME}.`);

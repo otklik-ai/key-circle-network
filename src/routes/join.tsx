@@ -49,9 +49,9 @@ function Join() {
 
   const valid = invite.data?.valid === true;
 
-  async function signUp(e: React.FormEvent) {
+  async function signUp(e: React.FormEvent): Promise<void> {
     e.preventDefault();
-    if (password.length < 8) return toast.error("Please choose a password of at least 8 characters.");
+    if (password.length < 8) { toast.error("Please choose a password of at least 8 characters."); return; }
     setBusy(true);
     const { data, error } = await supabase.auth.signUp({
       email: email.trim(),
@@ -62,7 +62,7 @@ function Join() {
       },
     });
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     if (data.session) {
       navigate({ to: "/onboarding" });
     } else {
