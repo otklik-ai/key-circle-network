@@ -3,7 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { useMyProfile } from "@/hooks/useClub";
+import { useAvatarUrls, useMyProfile } from "@/hooks/useClub";
 import { CLUB_NAME, INDUSTRIES } from "@/lib/club";
 import { Avatar } from "@/components/AppShell";
 
@@ -16,6 +16,7 @@ export function ProfileForm() {
   const [step, setStep] = useState(0);
   const [busy, setBusy] = useState(false);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const existingPhoto = useAvatarUrls([profile?.photo_url]);
   const [f, setF] = useState({
     full_name: "",
     headline: "",
@@ -212,7 +213,7 @@ export function ProfileForm() {
               <h1 className="font-serif text-4xl leading-tight">A portrait, please.</h1>
               <p className="mt-2 text-sm text-foreground/55">A real photo of you. Members trust faces, not logos.</p>
               <div className="mt-6 flex items-center gap-6">
-                <Avatar name={f.full_name || "?"} url={photoPreview} size="xl" />
+                <Avatar name={f.full_name || "?"} url={photoPreview ?? existingPhoto.data?.[profile?.photo_url ?? ""]} size="xl" />
                 <label className="btn-outline cursor-pointer">
                   {f.photo_url ? "Change photo" : "Upload photo"}
                   <input

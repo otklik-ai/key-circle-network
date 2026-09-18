@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as AuthenticatedDirectoryRouteImport } from './routes/_authenticated/directory'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
+import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedMembersUserIdRouteImport } from './routes/_authenticated/members.$userId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -46,6 +47,11 @@ const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
   path: '/onboarding',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedMembersUserIdRoute =
   AuthenticatedMembersUserIdRouteImport.update({
     id: '/members/$userId',
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/join': typeof JoinRoute
   '/directory': typeof AuthenticatedDirectoryRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/profile': typeof AuthenticatedProfileRoute
   '/members/$userId': typeof AuthenticatedMembersUserIdRoute
 }
 export interface FileRoutesByTo {
@@ -67,6 +74,7 @@ export interface FileRoutesByTo {
   '/join': typeof JoinRoute
   '/directory': typeof AuthenticatedDirectoryRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/profile': typeof AuthenticatedProfileRoute
   '/members/$userId': typeof AuthenticatedMembersUserIdRoute
 }
 export interface FileRoutesById {
@@ -77,15 +85,28 @@ export interface FileRoutesById {
   '/join': typeof JoinRoute
   '/_authenticated/directory': typeof AuthenticatedDirectoryRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
+  '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/members/$userId': typeof AuthenticatedMembersUserIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/auth' | '/join' | '/directory' | '/onboarding' | '/members/$userId'
+    | '/'
+    | '/auth'
+    | '/join'
+    | '/directory'
+    | '/onboarding'
+    | '/profile'
+    | '/members/$userId'
   fileRoutesByTo: FileRoutesByTo
   to:
-    '/' | '/auth' | '/join' | '/directory' | '/onboarding' | '/members/$userId'
+    | '/'
+    | '/auth'
+    | '/join'
+    | '/directory'
+    | '/onboarding'
+    | '/profile'
+    | '/members/$userId'
   id:
     | '__root__'
     | '/'
@@ -94,6 +115,7 @@ export interface FileRouteTypes {
     | '/join'
     | '/_authenticated/directory'
     | '/_authenticated/onboarding'
+    | '/_authenticated/profile'
     | '/_authenticated/members/$userId'
   fileRoutesById: FileRoutesById
 }
@@ -148,6 +170,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOnboardingRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/profile': {
+      id: '/_authenticated/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthenticatedProfileRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/members/$userId': {
       id: '/_authenticated/members/$userId'
       path: '/members/$userId'
@@ -161,12 +190,14 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDirectoryRoute: typeof AuthenticatedDirectoryRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
+  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedMembersUserIdRoute: typeof AuthenticatedMembersUserIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDirectoryRoute: AuthenticatedDirectoryRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
+  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedMembersUserIdRoute: AuthenticatedMembersUserIdRoute,
 }
 
