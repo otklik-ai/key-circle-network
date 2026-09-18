@@ -22,13 +22,13 @@ export function useConversations() {
       const others = parts.filter((p) => p.user_id !== me!.id);
       const otherIds = Array.from(new Set(others.map((p) => p.user_id)));
       const [{ data: convs }, { data: profiles }] = await Promise.all([
-        supabase.from("conversations").select("id, updated_at").in("id", convIds).order("updated_at", { ascending: false }),
+        supabase.from("conversations").select("id, last_message_at").in("id", convIds).order("last_message_at", { ascending: false }),
         supabase.from("profiles").select("user_id, full_name, headline, photo_url").in("user_id", otherIds),
       ]);
       const profById = Object.fromEntries((profiles ?? []).map((p) => [p.user_id, p]));
       return (convs ?? []).map((c) => {
         const other = others.find((o) => o.conversation_id === c.id);
-        return { id: c.id, updated_at: c.updated_at, other: other ? profById[other.user_id] : undefined };
+        return { id: c.id, updated_at: c.last_message_at, other: other ? profById[other.user_id] : undefined };
       });
     },
   });
