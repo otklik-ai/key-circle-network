@@ -26,6 +26,20 @@ export function useMyProfile() {
   });
 }
 
+/** The member's own private answers (age bracket, family, the note to the team). */
+export function useMyPrivateAnswers() {
+  return useQuery({
+    queryKey: ["my-private-answers"],
+    queryFn: async () => {
+      const { data: auth } = await supabase.auth.getUser();
+      if (!auth.user) return {};
+      const { data, error } = await supabase.from("profile_private").select("answers").eq("user_id", auth.user.id).maybeSingle();
+      if (error) throw error;
+      return (data?.answers ?? {}) as Record<string, unknown>;
+    },
+  });
+}
+
 export function useIsAdmin() {
   return useQuery({
     queryKey: ["is-admin"],
