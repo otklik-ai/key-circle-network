@@ -17,7 +17,8 @@ const MULTI_FIELDS = ["industries", "functional_roles", "interested_industries",
 const initialValues = (): Values => {
   const v: Values = { photo_url: "", city: "", country: "", chapter_role: "" };
   for (const q of ALL_QUESTIONS) {
-    v[q.field] = LIST_FIELDS.includes(q.field) || MULTI_FIELDS.includes(q.field) ? [] : "";
+    // List fields stay as raw text while typing; they are split on save.
+    v[q.field] = MULTI_FIELDS.includes(q.field) ? [] : "";
     if (q.noteField) v[q.noteField] = "";
   }
   return v;
@@ -47,7 +48,7 @@ export function ProfileForm() {
     const pick = (field: string) => priv[field] ?? p[field];
     for (const key of Object.keys(next)) {
       const raw = pick(key);
-      if (Array.isArray(raw)) next[key] = raw as string[];
+      if (Array.isArray(raw)) next[key] = LIST_FIELDS.includes(key) ? (raw as string[]).join(", ") : (raw as string[]);
       else if (typeof raw === "string") next[key] = raw;
     }
     // Carry over the answers from the earlier, shorter form.
