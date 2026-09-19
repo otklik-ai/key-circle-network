@@ -21,6 +21,8 @@ export type Question = {
   /** Content rule guidance shown under free-text boxes. */
   guided?: boolean;
   required?: boolean;
+  /** Always shared — no visibility control (needed for the directory). */
+  fixed?: boolean;
 };
 
 export type Section = { id: string; title: string; blurb: string; questions: Question[] };
@@ -34,8 +36,8 @@ export const SECTIONS: Section[] = [
     title: "Where you are",
     blurb: "So members can find you in the right city, in the right language.",
     questions: [
-      { field: "full_name", n: 1, label: "Full name", type: "text", vis: "shared", required: true },
-      { field: "location", n: 2, label: "City and country where you are based", type: "location", vis: "shared", required: true },
+      { field: "full_name", n: 1, label: "Full name", type: "text", vis: "shared", required: true, fixed: true },
+      { field: "location", n: 2, label: "City and country where you are based", type: "location", vis: "shared", required: true, fixed: true },
       { field: "other_cities", n: 3, label: "Other cities where you spend real time each year", hint: "Comma separated", type: "list", vis: "shared" },
       { field: "base_countries", n: 4, label: "Countries where you have a base, work, or run something", hint: "Comma separated", type: "list", vis: "shared" },
       { field: "languages", n: 5, label: "Languages you do business in", hint: "Comma separated", type: "list", vis: "shared" },
