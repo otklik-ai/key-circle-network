@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
 import { generateInviteKey, inviteMessage, type Invite, type SearchRequest } from "@/lib/club";
+import { sendInviteEmail } from "@/lib/invites.functions";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   beforeLoad: async ({ context }) => {
@@ -94,6 +95,18 @@ function Invites() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["invites"] }),
   });
 
+  const sendMail = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await sendInviteEmail({ data: { inviteId: id, origin: window.location.origin } });
+      return res;
+    },
+    onSuccess: (res) => {
+      if (res.sent) toast.success(`Invitation sent to ${res.email}.`);
+      else toast.info("This address has opted out of emails, so nothing was sent.");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   const link = (key: string) => `${window.location.origin}/join?key=${key}`;
   const copy = async (text: string, what: string) => {
     await navigator.clipboard.writeText(text);
@@ -143,14 +156,24 @@ function Invites() {
                 Copy invitation text
               </button>
               {last.email && (
-                <a
-                  className="btn-outline px-3 py-1.5 text-xs"
-                  href={`mailto:${last.email}?subject=${encodeURIComponent("An invitation to The Circle")}&body=${encodeURIComponent(
-                    inviteMessage({ name: last.invited_name, key: last.key, link: link(last.key), note: last.note }),
-                  )}`}
-                >
-                  Open in email
-                </a>
+                <>
+                  <button
+                    type="button"
+                    className="btn-outline px-3 py-1.5 text-xs"
+                    disabled={sendMail.isPending}
+                    onClick={() => sendMail.mutate(last.id)}
+                  >
+                    {sendMail.isPending ? "Sending…" : "Send by email"}
+                  </button>
+                  <a
+                    className="btn-outline px-3 py-1.5 text-xs"
+                    href={`mailto:${last.email}?subject=${encodeURIComponent("An invitation to The Circle")}&body=${encodeURIComponent(
+                      inviteMessage({ name: last.invited_name, key: last.key, link: link(last.key), note: last.note }),
+                    )}`}
+                  >
+                    Open in email
+                  </a>
+                </>
               )}
             </div>
           </div>
@@ -189,6 +212,16 @@ function Invites() {
                         <button type="button" className="text-xs underline underline-offset-4" onClick={() => copy(link(i.key), "Link")}>
                           Copy link
                         </button>
+                        {i.email && (
+                          <button
+                            type="button"
+                            className="ml-3 text-xs underline underline-offset-4 disabled:opacity-40"
+                            disabled={sendMail.isPending}
+                            onClick={() => sendMail.mutate(i.id)}
+                          >
+                            Send
+                          </button>
+                        )}
                         <button type="button" className="ml-3 text-xs text-destructive" onClick={() => revoke.mutate(i.id)}>
                           Revoke
                         </button>
