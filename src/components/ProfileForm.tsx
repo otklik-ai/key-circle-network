@@ -51,7 +51,8 @@ export function ProfileForm() {
     for (const key of Object.keys(next)) {
       const raw = pick(key);
       if (Array.isArray(raw)) next[key] = LIST_FIELDS.includes(key) ? (raw as string[]).join(", ") : (raw as string[]);
-      else if (typeof raw === "string") next[key] = raw;
+      else if (typeof raw === "string")
+        next[key] = JOINED_MULTI_FIELDS.includes(key) ? raw.split(",").map((s) => s.trim()).filter(Boolean) : raw;
     }
     // Carry over the answers from the earlier, shorter form.
     if (!next["background"] && typeof p["bio"] === "string") next["background"] = p["bio"] as string;
@@ -115,6 +116,8 @@ export function ProfileForm() {
       }
       if (LIST_FIELDS.includes(q.field)) {
         put(q.field, (v[q.field] as string).split(",").map((s) => s.trim()).filter(Boolean), private_);
+      } else if (JOINED_MULTI_FIELDS.includes(q.field)) {
+        put(q.field, ((v[q.field] as string[]) ?? []).join(", ") || null, private_);
       } else if (MULTI_FIELDS.includes(q.field)) {
         put(q.field, (v[q.field] as string[]) ?? [], private_);
       } else {
