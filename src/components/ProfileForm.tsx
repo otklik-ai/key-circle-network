@@ -111,7 +111,9 @@ export function ProfileForm() {
         put("chapter_role", str("chapter_role"), private_);
         continue;
       }
-      if (LIST_FIELDS.includes(q.field) || MULTI_FIELDS.includes(q.field)) {
+      if (LIST_FIELDS.includes(q.field)) {
+        put(q.field, (v[q.field] as string).split(",").map((s) => s.trim()).filter(Boolean), private_);
+      } else if (MULTI_FIELDS.includes(q.field)) {
         put(q.field, (v[q.field] as string[]) ?? [], private_);
       } else {
         put(q.field, str(q.field), private_);
@@ -319,11 +321,7 @@ function QuestionRow({
             <textarea className="field min-h-24" maxLength={q.max} value={text(q.field)} onChange={(e) => onChange(q.field, e.target.value)} />
           )}
           {q.type === "list" && (
-            <input
-              className="field"
-              value={arr(q.field).join(", ")}
-              onChange={(e) => onChange(q.field, e.target.value.split(",").map((s) => s.trim()).filter(Boolean))}
-            />
+            <input className="field" value={text(q.field)} onChange={(e) => onChange(q.field, e.target.value)} />
           )}
           {q.type === "location" && (
             <div className="grid gap-3 sm:grid-cols-2">
