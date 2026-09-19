@@ -28,9 +28,10 @@ export const searchMembers = createServerFn({ method: "POST" })
     const { data: profiles, error } = await context.supabase
       .from("profiles")
       .select(
-        "user_id, full_name, headline, bio, city, country, industries, expertise, passports, languages, seeking, offering, current_projects",
+        "user_id, full_name, one_liner, headline, role_org, functional_roles, call_about, background, bio, city, country, other_cities, base_countries, industries, interested_industries, active_markets, languages, focus_now, seeking_people, seeking_people_note, offering_types, offering, open_to_contact, home_chapter_city",
       )
       .eq("onboarding_complete", true)
+      .eq("review_status", "approved")
       .neq("user_id", context.userId);
     if (error) throw error;
 
