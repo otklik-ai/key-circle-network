@@ -28,9 +28,10 @@ export const searchMembers = createServerFn({ method: "POST" })
     const { data: profiles, error } = await context.supabase
       .from("profiles")
       .select(
-        "user_id, full_name, headline, bio, city, country, industries, expertise, passports, languages, seeking, offering, current_projects",
+        "user_id, full_name, one_liner, headline, role_org, functional_roles, call_about, background, bio, city, country, other_cities, base_countries, industries, interested_industries, active_markets, languages, focus_now, seeking_people, seeking_people_note, offering_types, offering, open_to_contact, home_chapter_city",
       )
       .eq("onboarding_complete", true)
+      .eq("review_status", "approved")
       .neq("user_id", context.userId);
     if (error) throw error;
 
@@ -42,7 +43,7 @@ export const searchMembers = createServerFn({ method: "POST" })
     const directory = profiles
       .map(
         (p) =>
-          `ID: ${p.user_id}\nName: ${p.full_name}\nHeadline: ${p.headline ?? ""}\nLocation: ${[p.city, p.country].filter(Boolean).join(", ")}\nIndustries: ${p.industries.join(", ")}\nExpertise: ${p.expertise.join(", ")}\nPassports: ${p.passports.join(", ")}\nLanguages: ${p.languages.join(", ")}\nOffers: ${p.offering ?? ""}\nSeeking: ${p.seeking ?? ""}\nProjects: ${p.current_projects ?? ""}\nAbout: ${p.bio ?? ""}`,
+          `ID: ${p.user_id}\nName: ${p.full_name}\nDoes: ${p.one_liner ?? p.headline ?? ""}\nRole: ${p.role_org ?? ""}\nFunctionally: ${p.functional_roles.join(", ")}\nBased: ${[p.city, p.country].filter(Boolean).join(", ")}\nAlso spends time in: ${p.other_cities.join(", ")}\nBases in: ${p.base_countries.join(", ")}\nIndustries: ${p.industries.join(", ")}\nCurrently interested in: ${p.interested_industries.join(", ")}\nActive markets: ${p.active_markets.join(", ")}\nLanguages: ${p.languages.join(", ")}\nCall about: ${p.call_about ?? ""}\nFocused on: ${p.focus_now ?? ""}\nOffers: ${[p.offering_types.join(", "), p.offering].filter(Boolean).join(" — ")}\nWants to meet: ${[p.seeking_people.join(", "), p.seeking_people_note].filter(Boolean).join(" — ")}\nBackground: ${p.background ?? p.bio ?? ""}\nChapter: ${p.home_chapter_city ?? ""}\nDirect contact: ${p.open_to_contact ?? ""}`,
       )
       .join("\n\n---\n\n");
 

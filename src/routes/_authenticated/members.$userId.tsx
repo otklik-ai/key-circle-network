@@ -134,19 +134,27 @@ function Member() {
         </div>
 
         <dl className="mt-8 grid gap-6 border-t border-foreground/10 pt-8 sm:grid-cols-2">
-          <Block label="About" value={p.bio} full />
-          <Block label="Expertise" value={p.expertise.join(", ")} />
+          <Block label="Role and organisation" value={p.role_org} />
+          <Block label="Functionally" value={p.functional_roles.join(", ")} />
+          <Block label="Call them about" value={p.call_about} full />
+          <Block label="Background" value={p.background ?? p.bio} full />
+          <Block label="Focused on right now" value={p.focus_now ?? p.current_projects} full />
+          <Block label="Interested in" value={p.interested_industries.join(", ")} />
+          <Block label="Active markets" value={p.active_markets.join(", ")} />
+          <Block label="Can offer" value={[p.offering_types.join(", "), p.offering].filter(Boolean).join(" — ")} full />
+          <Block label="Would like to meet" value={[p.seeking_people.join(", "), p.seeking_people_note].filter(Boolean).join(" — ")} full />
           <Block label="Languages" value={p.languages.join(", ")} />
-          <Block label="Passports / residencies" value={p.passports.join(", ")} />
+          <Block label="Also spends time in" value={p.other_cities.join(", ")} />
+          <Block label="Bases in" value={p.base_countries.join(", ")} />
+          <Block label="Home chapter" value={[p.home_chapter_city, p.chapter_role].filter(Boolean).join(" · ")} />
+          <Block label="Best way to reach them" value={[p.contact_pref, p.open_to_contact && `direct contact: ${p.open_to_contact.toLowerCase()}`].filter(Boolean).join(" · ")} />
+          <Block label="Outside work" value={p.outside_work} full />
           {p.linkedin_url && (
             <div>
-              <dt className="label-caps">LinkedIn</dt>
+              <dt className="label-caps">LinkedIn or website</dt>
               <dd className="mt-1 text-sm"><a href={p.linkedin_url} target="_blank" rel="noreferrer" className="underline underline-offset-4">{p.linkedin_url.replace(/^https?:\/\//, "")}</a></dd>
             </div>
           )}
-          <Block label="Can offer" value={p.offering} full />
-          <Block label="Looking for" value={p.seeking} full />
-          <Block label="Current projects" value={p.current_projects} full />
         </dl>
       </div>
     </AppShell>

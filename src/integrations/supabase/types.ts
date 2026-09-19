@@ -162,76 +162,177 @@ export type Database = {
           },
         ]
       }
+      profile_private: {
+        Row: {
+          answers: Json
+          created_at: string
+          id: string
+          profile_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          answers?: Json
+          created_at?: string
+          id?: string
+          profile_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          answers?: Json
+          created_at?: string
+          id?: string
+          profile_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profile_private_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
+          active_markets: string[]
+          background: string | null
+          base_countries: string[]
           bio: string | null
+          call_about: string | null
           call_link: string | null
+          chapter_role: string | null
           city: string | null
+          contact_pref: string | null
           country: string | null
           created_at: string
           current_projects: string | null
           email: string | null
           expertise: string[]
+          field_visibility: Json
+          flagged_fields: string[]
+          focus_now: string | null
           full_name: string
+          functional_roles: string[]
           headline: string | null
+          home_chapter_city: string | null
           id: string
           industries: string[]
+          interested_industries: string[]
           languages: string[]
           linkedin_url: string | null
           membership_status: string
           offering: string | null
+          offering_types: string[]
           onboarding_complete: boolean
+          one_liner: string | null
+          open_to_contact: string | null
+          other_cities: string[]
+          outside_work: string | null
           passports: string[]
           photo_url: string | null
+          review_status: string
+          role_org: string | null
           seeking: string | null
+          seeking_people: string[]
+          seeking_people_note: string | null
+          skipped_fields: string[]
           updated_at: string
           user_id: string
         }
         Insert: {
+          active_markets?: string[]
+          background?: string | null
+          base_countries?: string[]
           bio?: string | null
+          call_about?: string | null
           call_link?: string | null
+          chapter_role?: string | null
           city?: string | null
+          contact_pref?: string | null
           country?: string | null
           created_at?: string
           current_projects?: string | null
           email?: string | null
           expertise?: string[]
+          field_visibility?: Json
+          flagged_fields?: string[]
+          focus_now?: string | null
           full_name?: string
+          functional_roles?: string[]
           headline?: string | null
+          home_chapter_city?: string | null
           id?: string
           industries?: string[]
+          interested_industries?: string[]
           languages?: string[]
           linkedin_url?: string | null
           membership_status?: string
           offering?: string | null
+          offering_types?: string[]
           onboarding_complete?: boolean
+          one_liner?: string | null
+          open_to_contact?: string | null
+          other_cities?: string[]
+          outside_work?: string | null
           passports?: string[]
           photo_url?: string | null
+          review_status?: string
+          role_org?: string | null
           seeking?: string | null
+          seeking_people?: string[]
+          seeking_people_note?: string | null
+          skipped_fields?: string[]
           updated_at?: string
           user_id: string
         }
         Update: {
+          active_markets?: string[]
+          background?: string | null
+          base_countries?: string[]
           bio?: string | null
+          call_about?: string | null
           call_link?: string | null
+          chapter_role?: string | null
           city?: string | null
+          contact_pref?: string | null
           country?: string | null
           created_at?: string
           current_projects?: string | null
           email?: string | null
           expertise?: string[]
+          field_visibility?: Json
+          flagged_fields?: string[]
+          focus_now?: string | null
           full_name?: string
+          functional_roles?: string[]
           headline?: string | null
+          home_chapter_city?: string | null
           id?: string
           industries?: string[]
+          interested_industries?: string[]
           languages?: string[]
           linkedin_url?: string | null
           membership_status?: string
           offering?: string | null
+          offering_types?: string[]
           onboarding_complete?: boolean
+          one_liner?: string | null
+          open_to_contact?: string | null
+          other_cities?: string[]
+          outside_work?: string | null
           passports?: string[]
           photo_url?: string | null
+          review_status?: string
+          role_org?: string | null
           seeking?: string | null
+          seeking_people?: string[]
+          seeking_people_note?: string | null
+          skipped_fields?: string[]
           updated_at?: string
           user_id?: string
         }
