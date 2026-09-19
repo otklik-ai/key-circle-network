@@ -16,7 +16,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: Admin,
 });
 
-type Tab = "invites" | "requests" | "analytics";
+type Tab = "invites" | "review" | "requests" | "analytics";
 
 function Admin() {
   const [tab, setTab] = useState<Tab>("invites");
@@ -25,19 +25,20 @@ function Admin() {
       <p className="eyebrow">Admin</p>
       <h1 className="mt-3 font-serif text-4xl leading-tight">The back room.</h1>
       <div className="mt-6 flex gap-2 border-b border-foreground/10">
-        {(["invites", "requests", "analytics"] as Tab[]).map((t) => (
+        {(["invites", "review", "requests", "analytics"] as Tab[]).map((t) => (
           <button
             key={t}
             type="button"
             onClick={() => setTab(t)}
             className={`-mb-px border-b-2 px-3 py-2 text-sm capitalize ${tab === t ? "border-antique text-foreground" : "border-transparent text-foreground/50"}`}
           >
-            {t === "requests" ? "Open requests" : t}
+            {t === "requests" ? "Open requests" : t === "review" ? "Profiles to review" : t}
           </button>
         ))}
       </div>
       <div className="mt-6">
         {tab === "invites" && <Invites />}
+        {tab === "review" && <Review />}
         {tab === "requests" && <Requests />}
         {tab === "analytics" && <Analytics />}
       </div>
@@ -234,6 +235,77 @@ function Invites() {
           </table>
         </div>
       </div>
+    </div>
+  );
+}
+
+function Review() {
+  const qc = useQueryClient();
+  const held = useQuery({
+    queryKey: ["held-profiles"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id, full_name, email, one_liner, call_about, background, focus_now, offering, seeking_people_note, flagged_fields, review_status")
+        .eq("review_status", "held")
+        .order("updated_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+  const decide = useMutation({
+    mutationFn: async (r: { id: string; status: "approved" | "held" }) => {
+      const { error } = await supabase.from("profiles").update({ review_status: r.status }).eq("id", r.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Profile updated.");
+      qc.invalidateQueries({ queryKey: ["held-profiles"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  return (
+    <div>
+      <p className="text-sm text-foreground/55">
+        Profiles whose answers mention figures, valuations or returns. They stay out of the directory until you approve them.
+      </p>
+      <ul className="mt-4 divide-y divide-foreground/8">
+        {held.data?.length === 0 && <li className="py-4 text-sm text-foreground/50">Nothing waiting.</li>}
+        {held.data?.map((p) => (
+          <li key={p.id} className="py-5">
+            <div className="flex flex-wrap items-baseline justify-between gap-3">
+              <div>
+                <p className="font-serif text-2xl">{p.full_name}</p>
+                <p className="text-xs text-foreground/50">{p.email}</p>
+              </div>
+              <button type="button" className="btn-ink px-3 py-2" onClick={() => decide.mutate({ id: p.id, status: "approved" })}>
+                Approve and publish
+              </button>
+            </div>
+            {p.flagged_fields.length > 0 && (
+              <p className="mt-2 text-xs text-antique">Flagged answers: {p.flagged_fields.join(", ")}</p>
+            )}
+            <dl className="mt-3 grid gap-3 text-sm sm:grid-cols-2">
+              {[
+                ["In one sentence", p.one_liner],
+                ["Call them about", p.call_about],
+                ["Background", p.background],
+                ["Focused on", p.focus_now],
+                ["Can offer", p.offering],
+                ["Would like to meet", p.seeking_people_note],
+              ].map(([l, val]) =>
+                val ? (
+                  <div key={l as string}>
+                    <dt className="label-caps">{l}</dt>
+                    <dd className="mt-1 whitespace-pre-line text-foreground/80">{val}</dd>
+                  </div>
+                ) : null,
+              )}
+            </dl>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
