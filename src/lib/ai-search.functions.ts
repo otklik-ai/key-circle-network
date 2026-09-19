@@ -43,7 +43,7 @@ export const searchMembers = createServerFn({ method: "POST" })
     const directory = profiles
       .map(
         (p) =>
-          `ID: ${p.user_id}\nName: ${p.full_name}\nHeadline: ${p.headline ?? ""}\nLocation: ${[p.city, p.country].filter(Boolean).join(", ")}\nIndustries: ${p.industries.join(", ")}\nExpertise: ${p.expertise.join(", ")}\nPassports: ${p.passports.join(", ")}\nLanguages: ${p.languages.join(", ")}\nOffers: ${p.offering ?? ""}\nSeeking: ${p.seeking ?? ""}\nProjects: ${p.current_projects ?? ""}\nAbout: ${p.bio ?? ""}`,
+          `ID: ${p.user_id}\nName: ${p.full_name}\nDoes: ${p.one_liner ?? p.headline ?? ""}\nRole: ${p.role_org ?? ""}\nFunctionally: ${p.functional_roles.join(", ")}\nBased: ${[p.city, p.country].filter(Boolean).join(", ")}\nAlso spends time in: ${p.other_cities.join(", ")}\nBases in: ${p.base_countries.join(", ")}\nIndustries: ${p.industries.join(", ")}\nCurrently interested in: ${p.interested_industries.join(", ")}\nActive markets: ${p.active_markets.join(", ")}\nLanguages: ${p.languages.join(", ")}\nCall about: ${p.call_about ?? ""}\nFocused on: ${p.focus_now ?? ""}\nOffers: ${[p.offering_types.join(", "), p.offering].filter(Boolean).join(" — ")}\nWants to meet: ${[p.seeking_people.join(", "), p.seeking_people_note].filter(Boolean).join(" — ")}\nBackground: ${p.background ?? p.bio ?? ""}\nChapter: ${p.home_chapter_city ?? ""}\nDirect contact: ${p.open_to_contact ?? ""}`,
       )
       .join("\n\n---\n\n");
 
