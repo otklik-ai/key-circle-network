@@ -17,7 +17,8 @@ const MULTI_FIELDS = ["industries", "functional_roles", "interested_industries",
 const initialValues = (): Values => {
   const v: Values = { photo_url: "", city: "", country: "", chapter_role: "" };
   for (const q of ALL_QUESTIONS) {
-    v[q.field] = LIST_FIELDS.includes(q.field) || MULTI_FIELDS.includes(q.field) ? [] : "";
+    // List fields stay as raw text while typing; they are split on save.
+    v[q.field] = MULTI_FIELDS.includes(q.field) ? [] : "";
     if (q.noteField) v[q.noteField] = "";
   }
   return v;
@@ -47,7 +48,7 @@ export function ProfileForm() {
     const pick = (field: string) => priv[field] ?? p[field];
     for (const key of Object.keys(next)) {
       const raw = pick(key);
-      if (Array.isArray(raw)) next[key] = raw as string[];
+      if (Array.isArray(raw)) next[key] = LIST_FIELDS.includes(key) ? (raw as string[]).join(", ") : (raw as string[]);
       else if (typeof raw === "string") next[key] = raw;
     }
     // Carry over the answers from the earlier, shorter form.
@@ -110,7 +111,9 @@ export function ProfileForm() {
         put("chapter_role", str("chapter_role"), private_);
         continue;
       }
-      if (LIST_FIELDS.includes(q.field) || MULTI_FIELDS.includes(q.field)) {
+      if (LIST_FIELDS.includes(q.field)) {
+        put(q.field, (v[q.field] as string).split(",").map((s) => s.trim()).filter(Boolean), private_);
+      } else if (MULTI_FIELDS.includes(q.field)) {
         put(q.field, (v[q.field] as string[]) ?? [], private_);
       } else {
         put(q.field, str(q.field), private_);
@@ -318,11 +321,7 @@ function QuestionRow({
             <textarea className="field min-h-24" maxLength={q.max} value={text(q.field)} onChange={(e) => onChange(q.field, e.target.value)} />
           )}
           {q.type === "list" && (
-            <input
-              className="field"
-              value={arr(q.field).join(", ")}
-              onChange={(e) => onChange(q.field, e.target.value.split(",").map((s) => s.trim()).filter(Boolean))}
-            />
+            <input className="field" value={text(q.field)} onChange={(e) => onChange(q.field, e.target.value)} />
           )}
           {q.type === "location" && (
             <div className="grid gap-3 sm:grid-cols-2">
