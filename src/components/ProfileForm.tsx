@@ -13,12 +13,14 @@ type Vis = Record<string, "shared" | "private">;
 
 const LIST_FIELDS = ["other_cities", "base_countries", "languages", "active_markets"];
 const MULTI_FIELDS = ["industries", "functional_roles", "interested_industries", "seeking_people", "offering_types"];
+// Chip multi-selects whose database column is a single text field (stored joined).
+const JOINED_MULTI_FIELDS = ["contact_pref"];
 
 const initialValues = (): Values => {
   const v: Values = { photo_url: "", city: "", country: "", chapter_role: "" };
   for (const q of ALL_QUESTIONS) {
     // List fields stay as raw text while typing; they are split on save.
-    v[q.field] = MULTI_FIELDS.includes(q.field) ? [] : "";
+    v[q.field] = MULTI_FIELDS.includes(q.field) || JOINED_MULTI_FIELDS.includes(q.field) ? [] : "";
     if (q.noteField) v[q.noteField] = "";
   }
   return v;
