@@ -44,8 +44,9 @@ export const SECTIONS: Section[] = [
       {
         field: "contact_pref",
         n: 6,
-        label: "Best way to reach you",
-        type: "single",
+        label: "Best ways to reach you",
+        hint: "Pick as many as you like",
+        type: "multi",
         options: ["In the app", "Email", "WhatsApp", "Telegram", "Through the team"],
         vis: "shared",
       },

@@ -13,12 +13,14 @@ type Vis = Record<string, "shared" | "private">;
 
 const LIST_FIELDS = ["other_cities", "base_countries", "languages", "active_markets"];
 const MULTI_FIELDS = ["industries", "functional_roles", "interested_industries", "seeking_people", "offering_types"];
+// Chip multi-selects whose database column is a single text field (stored joined).
+const JOINED_MULTI_FIELDS = ["contact_pref"];
 
 const initialValues = (): Values => {
   const v: Values = { photo_url: "", city: "", country: "", chapter_role: "" };
   for (const q of ALL_QUESTIONS) {
     // List fields stay as raw text while typing; they are split on save.
-    v[q.field] = MULTI_FIELDS.includes(q.field) ? [] : "";
+    v[q.field] = MULTI_FIELDS.includes(q.field) || JOINED_MULTI_FIELDS.includes(q.field) ? [] : "";
     if (q.noteField) v[q.noteField] = "";
   }
   return v;
@@ -49,7 +51,8 @@ export function ProfileForm() {
     for (const key of Object.keys(next)) {
       const raw = pick(key);
       if (Array.isArray(raw)) next[key] = LIST_FIELDS.includes(key) ? (raw as string[]).join(", ") : (raw as string[]);
-      else if (typeof raw === "string") next[key] = raw;
+      else if (typeof raw === "string")
+        next[key] = JOINED_MULTI_FIELDS.includes(key) ? raw.split(",").map((s) => s.trim()).filter(Boolean) : raw;
     }
     // Carry over the answers from the earlier, shorter form.
     if (!next["background"] && typeof p["bio"] === "string") next["background"] = p["bio"] as string;
@@ -113,6 +116,8 @@ export function ProfileForm() {
       }
       if (LIST_FIELDS.includes(q.field)) {
         put(q.field, (v[q.field] as string).split(",").map((s) => s.trim()).filter(Boolean), private_);
+      } else if (JOINED_MULTI_FIELDS.includes(q.field)) {
+        put(q.field, ((v[q.field] as string[]) ?? []).join(", ") || null, private_);
       } else if (MULTI_FIELDS.includes(q.field)) {
         put(q.field, (v[q.field] as string[]) ?? [], private_);
       } else {
